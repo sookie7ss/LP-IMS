@@ -1,0 +1,42 @@
+/* App.css */
+.page-dashboard {
+  background-image: url('/path/to/your/assets/dashboard-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.page-inventory {
+  background-image: url('/path/to/your/assets/inventory-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.page-designation {
+  background-image: url('/path/to/your/assets/designation-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.page-purchase-details {
+  background-image: url('/path/to/your/assets/purchase-details-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.page-usage-history {
+  background-image: url('/path/to/your/assets/usage-history-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.page-user-management {
+  background-image: url('/path/to/your/assets/user-management-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+}
