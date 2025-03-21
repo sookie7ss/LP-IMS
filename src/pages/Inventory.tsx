@@ -38,7 +38,7 @@ export const Inventory = () => {
         <h1 className="text-2xl font-bold text-gray-800">
           Inventory Management
         </h1>
-        <button onClick={() => setShowForm(true)} className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+        <button onClick={() => setShowForm(true)} className="flex items-center px-4 py-2 bg-[#91c72d] text-white rounded-lg hover:bg-[#7caa28b2]">
           <PlusIcon size={20} className="mr-2" />
           Add Item
         </button>

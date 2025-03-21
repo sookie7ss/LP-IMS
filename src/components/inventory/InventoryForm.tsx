@@ -203,7 +203,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
             <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50">
               Cancel
             </button>
-            <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+            <button type="submit" className="px-4 py-2 bg-[#91c72d] text-white rounded-md hover:bg-[#7caa28b2]">
               {itemId ? 'Update Item' : 'Add Item'}
             </button>
           </div>

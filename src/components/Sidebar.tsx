@@ -9,25 +9,25 @@ export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const navItems = [
-    { path: '/', icon: LayoutDashboardIcon, label: 'Dashboard' },
+    { path: '/Dashboard', icon: LayoutDashboardIcon, label: 'Dashboard' },
     { path: '/inventory', icon: PackageIcon, label: 'Inventory' },
     { path: '/designation', icon: MapPinIcon, label: 'Designation' },
-    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'Purchase Details' },
-    { path: '/usage-history', icon: HistoryIcon, label: 'Usage History' },
-    { path: '/user-management', icon: UsersIcon, label: 'User Management' }
+    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'PurchaseDetails ' },
+    { path: '/usage-history', icon: HistoryIcon, label: 'UsageHistory ' },
+    { path: '/user-management', icon: UsersIcon, label: 'UserManagement' }
   ];
 
   return (
     <aside
-      className={`bg-[rgb(63,132,172)] border-r border-gray-200 transition-all duration-300 shadow-lg rounded-r-2xl ${isExpanded ? 'w-64' : 'w-20'}`}
+      className={`bg-black/80 border-r border-gray-200 transition-all duration-300 shadow-lg  ${isExpanded ? 'w-64' : 'w-20'}`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >
-      <div className="flex items-center justify-center border-b border-gray-300 bg-[rgb(50,195,140)] p-4">
+      <div className="flex items-center justify-center border-b border-gray-300 bg-[#91c72d] p-4">
         <motion.img 
           src={logo} 
           alt="Logo" 
-          className="h-12 w-12 rounded-lg border border-gray-300 shadow-lg"
+          className="h-12 w-12 ml-8 rounded-lg border border-gray-300 shadow-lg"
           animate={{ rotate: 360 }}
           transition={{ repeat: Infinity, duration: 10, ease: 'linear' }}
         />
@@ -44,7 +44,7 @@ export const Sidebar = () => {
           <Link
             key={path}
             to={path}
-            className={`flex items-center space-x-3 rounded-lg mb-1 transition-all duration-200 text-white hover:bg-[rgb(133,235,78)] ${isExpanded ? 'px-4 py-3' : 'px-1 py-2'}`}
+            className={`flex items-center space-x-3 rounded-lg transition-all duration-200 text-white hover:bg-[#91c72d] ${isExpanded ? 'px-1 py-4' : 'px-1 py-3'}`}
           >
             <Icon size={24} className="ml-3 min-w-max" />
             <motion.span 
