@@ -77,7 +77,7 @@ import { FaMoneyBillAlt } from 'react-icons/fa';
                 <div>
                   <p className="text-sm text-gray-600">Total Cost</p>
                   <p className="mt-1 text-2xl font-semibold">
-                    ?{totalCost.toFixed(2)}
+                    &#8369;{totalCost.toFixed(2)}
                   </p>
                 </div>
                 <div className="rounded-full bg-green-50 p-3 text-green-600">
@@ -90,7 +90,7 @@ import { FaMoneyBillAlt } from 'react-icons/fa';
                 <div>
                   <p className="text-sm text-gray-600">Avg. Cost per Item</p>
                   <p className="mt-1 text-2xl font-semibold">
-                    ?{(totalCost / (filteredItems.length || 1)).toFixed(2)}
+                    &#8369;{(totalCost / (filteredItems.length || 1)).toFixed(2)}
                   </p>
                 </div>
                 <div className="rounded-full bg-purple-50 p-3 text-purple-600">
@@ -114,7 +114,7 @@ import { FaMoneyBillAlt } from 'react-icons/fa';
                       {supplier}
                     </h3>
                     <span className="text-sm text-gray-500">
-                      ({items.length} items - ?
+                      ({items.length} items - &#8369;
                       {items.reduce((sum, item) => sum + item.cost, 0).toFixed(2)})
                     </span>
                   </div>
@@ -129,7 +129,7 @@ import { FaMoneyBillAlt } from 'react-icons/fa';
                             <p className="text-sm text-gray-500">{item.category}</p>
                           </div>
                           <span className="text-sm font-medium text-gray-900">
-                            ?{item.cost.toFixed(2)}
+                            &#8369;{item.cost.toFixed(2)}
                           </span>
                         </div>
                         <div className="mt-2 flex items-center text-sm text-gray-500">

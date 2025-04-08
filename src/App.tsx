@@ -19,7 +19,7 @@ const isAuthenticated = () => {
 };
 
 // Protected Route Component
-const ProtectedRoute = ({ element }) => {
+const ProtectedRoute = ({ element }: { element: React.ReactElement }) => {
   return isAuthenticated() ? element : <Navigate to="/" />;
 };
 

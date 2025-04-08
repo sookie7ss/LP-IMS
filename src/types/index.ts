@@ -7,16 +7,16 @@ export interface User {
 }
 export interface InventoryItem {
   id: string;
-  name: string;
-  category: string;
-  subCategory: string;
+  item_name: string;
+  item_category: string;
+  item_sub_category: string;
   location: string;
   purchaseDate: string;
   supplier: string;
   cost: number;
   status: 'Active - Currently Used' | 'Active - Not Currently Used' | 'Inactive - Defective' | 'Disposed';
   remarks?: string;
-  lastUpdated: string;
+  last_update: string;
   lastUpdatedBy: string;
   createdBy: string;
   createdAt: string;

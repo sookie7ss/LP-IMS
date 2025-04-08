@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, Component } from 'react';
+import React, { useState, createContext, useContext, Component, ReactNode } from 'react';
 import { InventoryItem, Category, Location } from '../types';
 import { useUser } from './UserContext';
 interface InventoryContextType {
@@ -46,16 +46,16 @@ const mockLocations: Location[] = [{
 // Mock inventory items
 const mockItems: InventoryItem[] = [{
   id: 'item-1',
-  name: 'Dell Monitor 24"',
-  category: 'IT Devices',
-  subCategory: 'Monitors',
+  item_name: 'Dell Monitor 24"',
+  item_category: 'IT Devices',
+  item_sub_category: 'Monitors',
   location: 'LP1 Coworking',
   purchaseDate: '2023-01-15',
   supplier: 'Dell Inc.',
   cost: 299.99,
   status: 'Active - Currently Used',
   createdAt: '2023-01-16T10:00:00Z',
-  lastUpdated: '2023-01-16T10:00:00Z',
+  last_update: '2023-01-16T10:00:00Z',
   createdBy: 'user-1',
   lastUpdatedBy: 'user-1',
   usageHistory: [{
@@ -81,7 +81,7 @@ export const InventoryProvider: React.FC<{
       ...itemData,
       id: `item-${Date.now()}`,
       createdAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
+      last_update: new Date().toISOString(),
       createdBy: currentUser.id,
       lastUpdatedBy: currentUser.id
     };

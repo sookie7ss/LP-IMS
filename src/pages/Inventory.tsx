@@ -16,11 +16,11 @@ export const Inventory = () => {
     search: ''
   });
   const filteredItems = items.filter(item => {
-    if (filters.category && item.category !== filters.category) return false;
+    if (filters.category && item.item_category !== filters.category) return false;
     if (filters.status && item.status !== filters.status) return false;
     if (filters.search) {
       const searchTerm = filters.search.toLowerCase();
-      return item.name.toLowerCase().includes(searchTerm) || item.category.toLowerCase().includes(searchTerm) || item.subCategory.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm);
+      return item.item_name.toLowerCase().includes(searchTerm) || item.item_category.toLowerCase().includes(searchTerm) || item.item_sub_category.toLowerCase().includes(searchTerm) || item.location.toLowerCase().includes(searchTerm);
     }
     return true;
   });
@@ -101,7 +101,7 @@ export const Inventory = () => {
       })}>
             <h3 className="font-medium text-gray-900">{category.name}</h3>
             <p className="text-sm text-gray-500 mt-1">
-              {items.filter(item => item.category === category.name).length}{' '}
+              {items.filter(item => item.item_category === category.name).length}{' '}
               items
             </p>
             <div className="mt-2">

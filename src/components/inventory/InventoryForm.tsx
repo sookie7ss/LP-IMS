@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { useInventory } from '../../context/InventoryContext';
 import { XIcon } from 'lucide-react';
 import { InventoryItem } from '../../types';
+import { addItem } from '../../lib/supabase/items';
 interface InventoryFormProps {
   itemId: string | null;
   onClose: () => void;
 }
+
 export const InventoryForm: React.FC<InventoryFormProps> = ({
   itemId,
   onClose
@@ -13,15 +15,16 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
   const {
     categories,
     locations,
-    addItem,
     updateItem,
     getItemById
   } = useInventory();
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [category, setCategory] = useState('');
+  const [subCategory, setSubCategory] = useState('');
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    subCategory: '',
+    item_name: '',
+    item_category: '',
+    item_sub_category: '',
     location: '',
     purchaseDate: '',
     supplier: '',
@@ -34,9 +37,9 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
       const item = getItemById(itemId);
       if (item) {
         setFormData({
-          name: item.name,
-          category: item.category,
-          subCategory: item.subCategory,
+          item_name: item.item_name,
+          item_category: item.item_category,
+          item_sub_category: item.item_sub_category,
           location: item.location,
           purchaseDate: item.purchaseDate,
           supplier: item.supplier,
@@ -44,33 +47,38 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           status: item.status,
           remarks: item.remarks || ''
         });
-        setSelectedCategory(item.category);
+        setSelectedCategory(item.item_category);
       }
     }
   }, [itemId, getItemById]);
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const itemData = {
-      ...formData,
-      cost: parseFloat(formData.cost)
-    };
-    if (itemId) {
-      updateItem(itemId, itemData);
-    } else {
-      addItem({
-        ...itemData,
-        usageHistory: []
-      } as Omit<InventoryItem, 'id' | 'createdAt' | 'lastUpdated' | 'createdBy' | 'lastUpdatedBy'>);
+    try{
+      const {data, error} = await addItem(formData);
+      if (error) {
+        console.error("Error adding item:", error || "Response is null");
+        return;
+      }
+      else
+      {
+        console.log("Item added successfully:", data);
+      }
+    }catch(error){
+      console.error("Error adding item:", error);
     }
     onClose();
   };
+  
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const category = e.target.value;
+    const item_category = e.target.value;
+    const subCategory = e.target.value;
     setSelectedCategory(category);
+    setCategory(item_category);
+    setSubCategory(subCategory);
     setFormData(prev => ({
       ...prev,
-      category,
-      subCategory: '' // Reset subcategory when category changes
+      item_category,
+      subCategory // Reset subcategory when category changes
     }));
   };
   return <div className="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
@@ -90,9 +98,9 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Item Name
               </label>
-              <input type="text" required value={formData.name} onChange={e => setFormData({
+              <input type="text" required value={formData.item_name} onChange={e => setFormData({
               ...formData,
-              name: e.target.value
+              item_name: e.target.value
             })} className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" />
             </div>
             {/* Category */}
@@ -100,10 +108,10 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Category
               </label>
-              <select required value={formData.category} onChange={handleCategoryChange} className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
+              <select required value={formData.item_category} onChange={handleCategoryChange} className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
                 <option value="">Select Category</option>
-                {categories.map(category => <option key={category.id} value={category.name}>
-                    {category.name}
+                {categories.map(item_category => <option key={item_category.id} value={item_category.name}>
+                    {item_category.name}
                   </option>)}
               </select>
             </div>
@@ -112,9 +120,9 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Sub-Category
               </label>
-              <select required value={formData.subCategory} onChange={e => setFormData({
+              <select required value={formData.item_sub_category} onChange={e => setFormData({
               ...formData,
-              subCategory: e.target.value
+              item_sub_category: e.target.value
             })} className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" disabled={!selectedCategory}>
                 <option value="">Select Sub-Category</option>
                 {selectedCategory && categories.find(cat => cat.name === selectedCategory)?.subCategories.map(sub => <option key={sub} value={sub}>

@@ -1,8 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Background.jpg';
 import logo from '../assets/head.png';
-
 
 export const Login = () => {
   const [username, setUsername] = useState('');
@@ -10,9 +9,8 @@ export const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate(); // React Router hook
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
 
     // Fake authentication logic (replace with real API call)
     if (username === "admin" && password === "password") {
