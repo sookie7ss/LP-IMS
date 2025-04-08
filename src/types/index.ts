@@ -2,7 +2,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
-  role: 'admin' | 'manager' | 'staff';
+  role: "admin" | "manager" | "staff";
   active: boolean;
 }
 export interface InventoryItem {
@@ -14,7 +14,11 @@ export interface InventoryItem {
   purchaseDate: string;
   supplier: string;
   cost: number;
-  status: 'Active - Currently Used' | 'Active - Not Currently Used' | 'Inactive - Defective' | 'Disposed';
+  status:
+    | "Active - Currently Used"
+    | "Active - Not Currently Used"
+    | "Inactive - Defective"
+    | "Disposed";
   remarks?: string;
   last_update: string;
   lastUpdatedBy: string;
@@ -27,11 +31,7 @@ export interface InventoryItem {
     endDate?: string;
   }[];
 }
-export interface Category {
-  id: string;
-  name: string;
-  subCategories: string[];
-}
+
 export interface Location {
   id: string;
   name: string;

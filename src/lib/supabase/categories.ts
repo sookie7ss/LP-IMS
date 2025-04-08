@@ -1,36 +1,18 @@
 import { supabase } from "./createclient";
+import { Category } from "../../interface/interfaceCategories";
+export const getCategories = async (): Promise<Category[]> => {
+  const { data, error } = await supabase.from("Category").select(`
+      category_id,
+      category_name,
+      Sub_Category(
+          sub_category_id,
+          sub_category_name     
+      )
+  `);
 
-export const getCategories = async () => {
-    const { data, error } = await supabase
-        .from('Categories')
-        .select('*')
-    
-    if (error) {
-        console.error("Error fetching categories:", error);
-        return [];
-    }
-    console.log("Fetched categories:", data);
-    return data;
-}
-
-export const getSubCategories = async () => {
-    const { data, error } = await supabase
-        .from('SubCategories')
-        .select(`
-            sub_category_id,
-            sub_category_name,
-            category_id
-            Category(
-            category_id,
-            category_name )
-            `
-            )
-        
-    
-    if (error) {
-        console.error("Error fetching subcategories:", error);
-        return [];
-    }
-    console.log("Fetched subcategories:", data);
-    return data;
-}
+  if (error) {
+    console.error("Error fetching categories:", error);
+    return [];
+  }
+  return data as Category[];
+};
