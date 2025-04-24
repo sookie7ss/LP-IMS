@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useInventory } from "../../context/InventoryContext";
 import { XIcon } from "lucide-react";
 import { InventoryItem } from "../../types";
-import { insertItem } from "../../lib/supabase/items";
+import { ItemInput } from "../../lib/supabase/items";
+import { useUser } from "../../context/UserContext";
+
 interface InventoryFormProps {
   itemId: string | null;
   onClose: () => void;
@@ -18,7 +20,9 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     locations,
     getItemById,
     fetchSubCategories,
+    addItem,
   } = useInventory();
+  const { currentUser } = useUser();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [formData, setFormData] = useState({
     item_name: "",
@@ -31,6 +35,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     status: "Active - Currently Used",
     remarks: "",
   });
+
   useEffect(() => {
     if (itemId) {
       const item = getItemById(itemId);
@@ -40,31 +45,51 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           item_category: item.itemCategory,
           item_sub_category: item.itemSubCategory,
           location: item.location,
-          purchaseDate: item.purchaseDate,
-          supplier: item.supplier,
-          cost: item.cost.toString(),
+          purchaseDate: item.purchaseDate || "",
+          supplier: "", // These fields don't exist in InventoryItem
+          cost: "", // Adjust as needed
           status: item.status,
-          remarks: item.remarks || "",
+          remarks: "", // Adjust as needed
         });
         setSelectedCategory(item.itemCategory);
       }
     }
   }, [itemId, getItemById]);
-  const [isLoading, setIsLoading] = useState(false);
-const [error, setError] = useState("");
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsLoading(true);
-  try {
-    await insertItem(formData); // Now syncs with context/Supabase
-    onClose();
-  } catch (err) {
-    setError("Failed to add item. Please try again.");
-  } finally {
-    setIsLoading(false);
-  }
-};
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      // Create an inventory item with the correct property names
+      const inventoryItemData = {
+        itemName: formData.item_name,
+        itemCategory: formData.item_category,
+        itemSubCategory: formData.item_sub_category,
+        location: formData.location,
+        purchaseDate: formData.purchaseDate,
+        status: formData.status,
+        usageHistory: [
+          {
+            userId: currentUser?.id || "unknown",
+            userName: currentUser?.name || "Unknown User",
+            startDate: new Date().toISOString(),
+          },
+        ],
+      };
+
+      // Use the context's addItem function
+      await addItem(inventoryItemData);
+      onClose();
+    } catch (err) {
+      setError("Failed to add item. Please try again.");
+      console.error(err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const categoryName = e.target.value;
