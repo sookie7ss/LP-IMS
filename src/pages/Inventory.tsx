@@ -1,10 +1,63 @@
-import React, { useState } from "react";
-import { useInventory } from "../context/InventoryContext";
-import { PlusIcon, FilterIcon, SearchIcon } from "lucide-react";
+import { useState, useEffect } from "react";
+import { supabase } from "../lib/supabase/createclient";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { InventoryTable } from "../components/inventory/InventoryTable";
 import { InventoryForm } from "../components/inventory/InventoryForm";
+import { getItems } from "../lib/supabase/items";
+import { Category, SubCategory } from "../interface/interfaceCategories";
+
 export const Inventory = () => {
-  const { items, categories } = useInventory();
+  const [items, setItems] = useState<any[]>([]);
+    useEffect(() => {
+      const fetchItems = async () => {
+        const data = await getItems();
+        setItems(data);
+      }
+      fetchItems();
+    }, []);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+
+  const fetchCategories = async () => {
+    const { data, error } = await supabase.from("Category").select(`
+      category_id,
+      category_name,
+      Sub_Category (
+        sub_category_id,
+        sub_category_name
+      )
+    `);
+    if (error) {
+      console.error("Error fetching categories:", error);
+    } else if (data) {
+      setCategories(data);
+    }
+  };
+
+  const fetchSubCategories = async (categoryId: number) => {
+    const { data, error } = await supabase
+      .from("SubCategory")
+      .select(
+        `
+      sub_category_id,
+      sub_category_name
+    `
+      )
+      .eq("category_id", categoryId);
+
+    if (error) {
+      console.error("Error fetching subcategories:", error);
+    } else if (data) {
+      setSubCategories(data);
+    }
+  };
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      fetchSubCategories(categories[0].category_id);
+    }
+  }, [categories]);
+    
   const [showForm, setShowForm] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
   const [filters, setFilters] = useState({
@@ -53,7 +106,7 @@ export const Inventory = () => {
       <div className="p-4 bg-white rounded-lg shadow-sm">
         <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
           <div>
-            {/* <label className="block mb-1 text-sm font-medium text-gray-700">
+            <label className="block mb-1 text-sm font-medium text-gray-700">
               Category
             </label>
             <select
@@ -75,7 +128,7 @@ export const Inventory = () => {
                   {category.category_name}
                 </option>
               ))}
-            </select> */}
+            </select>
           </div>
           <div>
             <label className="block mb-1 text-sm font-medium text-gray-700">
@@ -127,37 +180,32 @@ export const Inventory = () => {
         </div>
       </div>
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* {categories.map((category) => (
+        {categories.map((category) => (
           <div
-            key={category.id}
+            key={category.category_id}
             className="p-4 bg-white rounded-lg shadow-sm cursor-pointer hover:bg-gray-50"
             onClick={() =>
               setFilters({
                 ...filters,
-                category: category.name,
+                category: category.category_name,
               })
             }
           >
-            <h3 className="font-medium text-gray-900">{category.name}</h3>
+            <h3 className="font-medium text-gray-900">{category.category_name}</h3>
             <p className="mt-1 text-sm text-gray-500">
               {
-                items.filter((item) => item.item_category === category.name)
+                items.filter((item) => item.item_category === category.category_name)
                   .length
               }{" "}
               items
             </p>
             <div className="mt-2">
-              {category.subCategories.map((sub) => (
-                <span
-                  key={sub}
-                  className="inline-block px-2 py-1 mr-2 mb-2 text-xs text-gray-600 bg-gray-100 rounded-full"
-                >
-                  {sub}
-                </span>
+              {category.Sub_Category?.map((sub) => (
+                <span key={sub.sub_category_id}>{sub.sub_category_name}</span>
               ))}
             </div>
           </div>
-        ))} */}
+        ))}
       </div>
       <div className="bg-white rounded-lg shadow-sm">
         <InventoryTable

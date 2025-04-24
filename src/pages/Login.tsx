@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Background.jpg';
 import logo from '../assets/head.png';
+import { InventoryForm } from '../components/inventory/InventoryForm';
 
 export const Login = () => {
   const [username, setUsername] = useState('');

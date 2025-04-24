@@ -36,15 +36,22 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
-          {items.map(item => <tr key={item.id}>
+          {items.length === 0 ? (
+            <tr>
+              <td colSpan={6} className="text-center py-6 text-sm text-gray-500">
+                No inventory items found.
+              </td>
+            </tr>
+          ) : (
+            items.map(item => <tr key={item.id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 <div className="text-sm font-medium text-gray-900">
-                  {item.name}
+                  {item.itemName}
                 </div>
-                <div className="text-sm text-gray-500">{item.subCategory}</div>
+                <div className="text-sm text-gray-500">{item.itemSubCategory}</div>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {item.category}
+                {item.itemCategory}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                 {item.location}
@@ -55,30 +62,42 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
                 </span>
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {new Date(item.lastUpdated).toLocaleDateString()}
+                {new Date(item.lastUpdate).toLocaleDateString()}
               </td>
               <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button onClick={() => onEdit(item.id)} className="text-blue-600 hover:text-blue-900 mr-3">
+                <button
+                  aria-label={`Edit ${item.itemName}`}
+                  onClick={() => onEdit(item.id)} 
+                  className="text-blue-600 hover:text-blue-900 mr-3"
+                >
                   <Edit2Icon size={16} />
                 </button>
-                <button onClick={() => onDelete(item.id)} className="text-red-600 hover:text-red-900">
+                <button 
+                  aria-label={`Delete ${item.itemName}`}
+                  onClick={() => onDelete(item.id)} 
+                  className="text-red-600 hover:text-red-900"
+                >
                   <Trash2Icon size={16} />
                 </button>
               </td>
-            </tr>)}
+            </tr>
+          ))
+          }
         </tbody>
       </table>
     </div>;
 };
+
 const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'Active - Currently Used':
+  const normalized = status.trim().toLowerCase();
+  switch (normalized) {
+    case 'active - currently used':
       return 'bg-green-100 text-green-800';
-    case 'Active - Not Currently Used':
+    case 'active - not currently used':
       return 'bg-blue-100 text-blue-800';
-    case 'Inactive - Defective':
+    case 'inactive - defective':
       return 'bg-yellow-100 text-yellow-800';
-    case 'Disposed':
+    case 'disposed':
       return 'bg-gray-100 text-gray-800';
     default:
       return 'bg-gray-100 text-gray-800';

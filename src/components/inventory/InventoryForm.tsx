@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useInventory } from "../../context/InventoryContext";
 import { XIcon } from "lucide-react";
 import { InventoryItem } from "../../types";
-import { addItem } from "../../lib/supabase/items";
+import { insertItem } from "../../lib/supabase/items";
 interface InventoryFormProps {
   itemId: string | null;
   onClose: () => void;
@@ -36,9 +36,9 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
       const item = getItemById(itemId);
       if (item) {
         setFormData({
-          item_name: item.item_name,
-          item_category: item.item_category,
-          item_sub_category: item.item_sub_category,
+          item_name: item.itemName,
+          item_category: item.itemCategory,
+          item_sub_category: item.itemSubCategory,
           location: item.location,
           purchaseDate: item.purchaseDate,
           supplier: item.supplier,
@@ -46,24 +46,25 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           status: item.status,
           remarks: item.remarks || "",
         });
-        setSelectedCategory(item.item_category);
+        setSelectedCategory(item.itemCategory);
       }
     }
   }, [itemId, getItemById]);
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const result = await addItem(formData);
-      if (!result) {
-        console.error("Error adding item: Response is null");
-        return;
-      }
-      console.log("Item added successfully:", result);
-    } catch (error) {
-      console.error("Error adding item:", error);
-    }
+  const [isLoading, setIsLoading] = useState(false);
+const [error, setError] = useState("");
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  setIsLoading(true);
+  try {
+    await insertItem(formData); // Now syncs with context/Supabase
     onClose();
-  };
+  } catch (err) {
+    setError("Failed to add item. Please try again.");
+  } finally {
+    setIsLoading(false);
+  }
+};
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const categoryName = e.target.value;
