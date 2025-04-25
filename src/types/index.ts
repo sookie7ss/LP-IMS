@@ -20,8 +20,3 @@ export interface InventoryItem {
   createdBy: string;
   lastUpdatedBy: string;
 }
-
-export interface Location {
-  id: string;
-  name: string;
-}

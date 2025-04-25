@@ -53,10 +53,11 @@ export const Inventory = () => {
   };
 
   useEffect(() => {
+    fetchCategories();
     if (categories.length > 0) {
       fetchSubCategories(categories[0].category_id);
     }
-  }, [categories]);
+  }, []);
     
   const [showForm, setShowForm] = useState(false);
   const [editingItemId, setEditingItemId] = useState<string | null>(null);
@@ -191,7 +192,9 @@ export const Inventory = () => {
               })
             }
           >
-            <h3 className="font-medium text-gray-900">{category.category_name}</h3>
+            <h3 className="font-medium text-gray-900">
+              {category.category_name}
+            </h3>
             <p className="mt-1 text-sm text-gray-500">
               {
                 items.filter((item) => item.item_category === category.category_name)
