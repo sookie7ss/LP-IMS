@@ -17,7 +17,8 @@ export const Inventory = () => {
     }, []);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
-
+  const [locations, setLocations] = useState<any[]>([]);
+  
   const fetchCategories = async () => {
     const { data, error } = await supabase.from("Category").select(`
       category_id,

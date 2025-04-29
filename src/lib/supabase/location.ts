@@ -1,7 +1,7 @@
 import { supabase } from "./createclient";
-import { Location } from "../../interface/interfaceLocation";
+import { OfficeLocation } from "../../interface/interfaceLocation";
 
-export const getLocations = async (): Promise<Location[]> => {
+export const getLocations = async (): Promise<OfficeLocation[]> => {
     const { data, error } = await supabase
         .from("Locations")
         .select(`
@@ -15,5 +15,5 @@ export const getLocations = async (): Promise<Location[]> => {
             return [];
         }
         console.log("Fetched locations:", data);
-        return data as Location[];
-}
+        return data as OfficeLocation[];
+};
