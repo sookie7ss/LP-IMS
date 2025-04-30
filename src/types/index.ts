@@ -11,7 +11,7 @@ export interface InventoryItem {
   itemName: string;
   itemCategory: string;
   itemSubCategory: string;
-  location: string;
+  itemLocation: string;
   purchaseDate?: string;
   status: string;
   usageHistory: Array<{ userId: string; userName: string; startDate: string; endDate?: string }>;
@@ -19,9 +19,4 @@ export interface InventoryItem {
   lastUpdated: string;
   createdBy: string;
   lastUpdatedBy: string;
-}
-
-export interface Location {
-  id: string;
-  name: string;
 }

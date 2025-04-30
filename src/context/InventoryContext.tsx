@@ -5,18 +5,20 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { InventoryItem, Location } from "../types";
+import { InventoryItem } from "../types";
 import { useUser } from "./UserContext";
 import { Category, SubCategory } from "../interface/interfaceCategories";
 import { supabase } from "../lib/supabase/createclient";
 import { getItems } from "../lib/supabase/items";
 import { insertItem } from "../lib/supabase/items";
+import { OfficeLocation } from "../interface/interfaceLocation";
+import { format } from "path";
 
 interface InventoryContextType {
   items: InventoryItem[];
   categories: Category[];
   subCategories: SubCategory[];
-  locations: Location[];
+  locations: OfficeLocation[];
 
   addItem: (
     item: Omit<
@@ -34,32 +36,13 @@ const InventoryContext = createContext<InventoryContextType | undefined>(
   undefined
 );
 
-const mockLocations: Location[] = [
-  {
-    id: "loc-1",
-    name: "LP1 Coworking",
-  },
-  {
-    id: "loc-2",
-    name: "LP2 Plus",
-  },
-  {
-    id: "loc-3",
-    name: "LP3 Suite",
-  },
-  {
-    id: "loc-4",
-    name: "LP4 Griffinstone",
-  },
-];
-// Mock inventory items
-
 export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [locations, setLocations] = useState<OfficeLocation[]>([]);
 
   const { currentUser } = useUser();
 
@@ -165,8 +148,31 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
+  const fetchLocations = async () => {
+    const { data, error } = await supabase
+    .from("Locations")
+    .select(
+      `
+      location_id,
+      location_name
+      `); // From location.ts
+    if (error) {
+      console.error("Error fetching locations:", error);
+    } else if (data) {
+      const formattedLocations = data.map((location) => ({
+        location_id: location.location_id,
+        location_name: location.location_name,
+      }));
+      setLocations(formattedLocations);
+    }
+  };
+
   useEffect(() => {
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    fetchLocations();
   }, []);
 
   return (
@@ -175,7 +181,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         items,
         categories,
         subCategories,
-        locations: mockLocations,
+        locations,
         addItem,
         updateItem,
         deleteItem,

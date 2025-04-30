@@ -12,9 +12,9 @@ export const Sidebar = () => {
     { path: '/Dashboard', icon: LayoutDashboardIcon, label: 'Dashboard' },
     { path: '/inventory', icon: PackageIcon, label: 'Inventory' },
     { path: '/designation', icon: MapPinIcon, label: 'Designation' },
-    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'PurchaseDetails ' },
-    { path: '/usage-history', icon: HistoryIcon, label: 'UsageHistory ' },
-    { path: '/user-management', icon: UsersIcon, label: 'UserManagement' }
+    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'Purchase Details ' },
+    { path: '/usage-history', icon: HistoryIcon, label: 'Usage History ' },
+    { path: '/user-management', icon: UsersIcon, label: 'User Management' }
   ];
 
   return (

@@ -28,7 +28,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     item_name: "",
     item_category: "",
     item_sub_category: "",
-    location: "",
+    item_location: "",
     purchaseDate: "",
     supplier: "",
     cost: "",
@@ -44,7 +44,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           item_name: item.itemName,
           item_category: item.itemCategory,
           item_sub_category: item.itemSubCategory,
-          location: item.location,
+          item_location: item.itemLocation,
           purchaseDate: item.purchaseDate || "",
           supplier: "", // These fields don't exist in InventoryItem
           cost: "", // Adjust as needed
@@ -68,7 +68,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
         itemName: formData.item_name,
         itemCategory: formData.item_category,
         itemSubCategory: formData.item_sub_category,
-        location: formData.location,
+        location: formData.item_location,
         purchaseDate: formData.purchaseDate,
         status: formData.status,
         usageHistory: [
@@ -201,19 +201,22 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               </label>
               <select
                 required
-                value={formData.location}
+                value={formData.item_location}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    location: e.target.value,
+                    item_location: e.target.value,
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
-                  <option key={location.id} value={location.name}>
-                    {location.name}
+                {locations.map((loc) => (
+                  <option
+                    key={loc.location_id}
+                    value={loc.location_name}
+                  >
+                    {loc.location_name}
                   </option>
                 ))}
               </select>
