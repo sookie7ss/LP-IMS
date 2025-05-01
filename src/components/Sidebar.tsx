@@ -25,27 +25,30 @@ export const Sidebar = () => {
   onMouseEnter={() => setIsExpanded(true)}
   onMouseLeave={() => setIsExpanded(false)}
 >
-  <div className="flex items-center border-b border-gray-300 bg-[#91c72d] p-4">
-    <motion.img
-      src={logo}
-      alt="Logo"
-      className={`h-12 w-12 rounded-lg border border-gray-300 shadow-lg transition-all duration-300 ${
-        isExpanded ? '' : 'mx-auto'
-      }`}
-      animate={{ rotate: 1400 }}
-      transition={{ repeat: Infinity, duration: 10, ease: 'linear' }}
-    />
-    {isExpanded && (
-      <motion.h1
-        className="ml-5 text-xl font-bold text-[#b5fa35]"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3 }}
-      >
-        Launchpad Inventory
-      </motion.h1>
-    )}
-  </div>
+<Link
+  to="/Dashboard"
+  className="flex items-center border-b border-gray-300 bg-[#91c72d] p-4"
+>
+  <motion.img
+    src={logo}
+    alt="Logo"
+    className={`h-12 w-12 rounded-lg border border-gray-300 shadow-lg transition-all duration-300 ${
+      isExpanded ? '' : 'mx-auto'
+    }`}
+    animate={{ rotate: 900 }}
+    transition={{ repeat: Infinity, duration: 10, ease: 'linear' }}
+  />
+  {isExpanded && (
+    <motion.h1
+      className="ml-5 text-xl font-bold text-[#b5fa35]"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.3 }}
+    >
+      Launchpad Inventory
+    </motion.h1>
+  )}
+</Link>
 
   <nav className="mt-2 space-y-4">
     {navItems.map(({ path, icon: Icon, label }) => {
@@ -64,7 +67,7 @@ export const Sidebar = () => {
               className="text-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 2 }}
+              transition={{ duration: 0.8 }}
             >
               {label}
             </motion.span>
