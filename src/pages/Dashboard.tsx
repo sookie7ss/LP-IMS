@@ -8,14 +8,8 @@ import {
   ClockIcon,
   UserIcon,
 } from "lucide-react";
+import { UsageHistory } from "../lib/supabase/usagehistory";
 
-// Define types for clarity
-interface UsageHistory {
-  userId: string;
-  userName: string;
-  startDate: string;
-  endDate?: string;
-}
 
 export const Dashboard = () => {
   const { items } = useInventory();
@@ -86,6 +80,7 @@ export const Dashboard = () => {
           icon={XCircleIcon}
           color="red"
         />
+
       </div>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div className="p-6 bg-white rounded-lg shadow-sm">
@@ -125,14 +120,37 @@ export const Dashboard = () => {
   );
 };
 
-const DashboardCard = ({ title, value, icon: Icon, color }: any) => (
-  <div
-    className={`flex items-center p-4 space-x-4 rounded-lg shadow-sm bg-${color}-100`}
-  >
-    <Icon className={`w-8 h-8 text-${color}-500`} />
-    <div>
-      <h4 className="text-xl font-semibold">{title}</h4>
-      <p className="text-2xl font-bold text-gray-800">{value}</p>
+const DashboardCard = ({ title, value, icon: Icon, color }: any) => {
+  const colorClasses: any = {
+    blue: {
+      bg: "bg-blue-100",
+      text: "text-blue-500",
+    },
+    green: {
+      bg: "bg-green-100",
+      text: "text-green-500",
+    },
+    yellow: {
+      bg: "bg-yellow-100",
+      text: "text-yellow-500",
+    },
+    red: {
+      bg: "bg-red-100",
+      text: "text-red-500",
+    },
+  };
+
+  const currentColor = colorClasses[color] || colorClasses.blue;
+
+  return (
+    <div className={`flex items-center p-4 space-x-4 rounded-lg shadow-sm ${currentColor.bg}`}>
+      <Icon className={`w-8 h-8 ${currentColor.text}`} />
+      <div>
+        <h4 className="text-xl font-semibold">{title}</h4>
+        <p className="text-2xl font-bold text-gray-800">{value}</p>
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+

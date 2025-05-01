@@ -13,6 +13,7 @@ import { getItems } from "../lib/supabase/items";
 import { insertItem } from "../lib/supabase/items";
 import { OfficeLocation } from "../interface/interfaceLocation";
 import { format } from "path";
+import { getLocations } from "../lib/supabase/location";
 
 interface InventoryContextType {
   items: InventoryItem[];
@@ -82,9 +83,10 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 
   const updateItem = (id: string, itemData: Partial<InventoryItem>) => {
     if (!currentUser) return;
+    const numericId = Number(id);
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id
+        item.id === numericId
           ? {
               ...item,
               ...itemData,
@@ -97,11 +99,13 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const deleteItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    const numericId = Number(id);
+    setItems((prev) => prev.filter((item) => item.id !== numericId));
   };
 
   const getItemById = (id: string) => {
-    return items.find((item) => item.id === id);
+    const numericId = Number(id);
+    return items.find((item) => item.id === numericId);
   };
 
   const fetchCategories = async () => {
@@ -149,28 +153,13 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchLocations = async () => {
-    const { data, error } = await supabase.from("Locations").select(
-      `
-      location_id,
-      location_name
-      `
-    ); // From location.ts
-    if (error) {
-      console.error("Error fetching locations:", error);
-    } else if (data) {
-      const formattedLocations = data.map((location) => ({
-        location_id: location.location_id,
-        location_name: location.location_name,
-      }));
-      setLocations(formattedLocations);
-    }
+    const locs = await getLocations();
+    setLocations(locs);
+    console.log("Loaded locations into context:", locs);
   };
 
   useEffect(() => {
     fetchCategories();
-  }, []);
-
-  useEffect(() => {
     fetchLocations();
   }, []);
 
