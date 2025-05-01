@@ -41,17 +41,17 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
       const item = getItemById(itemId);
       if (item) {
         setFormData({
-          item_name: item.itemName,
-          item_category: item.itemCategory,
-          item_sub_category: item.itemSubCategory,
-          item_location: item.itemLocation,
+          item_name: item.item_name,
+          item_category: item.item_category,
+          item_sub_category: item.item_sub_category,
+          item_location: item.item_location,
           purchaseDate: item.purchaseDate || "",
           supplier: "", // These fields don't exist in InventoryItem
           cost: "", // Adjust as needed
           status: item.status,
           remarks: "", // Adjust as needed
         });
-        setSelectedCategory(item.itemCategory);
+        setSelectedCategory(item.item_category);
       }
     }
   }, [itemId, getItemById]);
@@ -65,19 +65,22 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     try {
       // Create an inventory item with the correct property names
       const inventoryItemData = {
-        itemName: formData.item_name,
-        itemCategory: formData.item_category,
-        itemSubCategory: formData.item_sub_category,
-        itemLocation: formData.item_location,
+        item_name: formData.item_name,
+        item_category: formData.item_category,
+        item_sub_category: formData.item_sub_category,
+        item_location: formData.item_location,
         purchaseDate: formData.purchaseDate,
         status: formData.status,
-        usageHistory: [
+        usage_history: [
           {
             userId: currentUser?.id || "unknown",
             userName: currentUser?.name || "Unknown User",
             startDate: new Date().toISOString(),
+            endDate: new Date().toISOString()
           },
         ],
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
         createdBy: currentUser?.id || "unknown",
         lastUpdatedBy: currentUser?.id || "unknown",
       };

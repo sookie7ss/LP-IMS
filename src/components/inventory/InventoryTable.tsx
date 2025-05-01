@@ -17,6 +17,8 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
     item.itemCategory || item.item_category || "";
   const getItemSubCategory = (item: any) =>
     item.itemSubCategory || item.item_sub_category || "";
+  const getItemLocation = (item: any) =>
+    item.itemLocation || item.location || "";
   const getItemId = (item: any): string => (item.id || "").toString();
   const getLastUpdated = (item: any) =>
     item.lastUpdated || item.last_update || new Date().toISOString();
@@ -86,7 +88,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
                   {getItemCategory(item)}
                 </td>
                 <td className="px-6 py-4 text-sm text-gray-500 whitespace-nowrap">
-                  {item.location}
+                  {getItemLocation(item)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
                   <span
@@ -135,7 +137,7 @@ const getStatusColor = (status: string) => {
     case "inactive - defective":
       return "bg-yellow-100 text-yellow-800";
     case "disposed":
-      return "bg-gray-100 text-gray-800";
+      return "bg-red-100 text-red-800";
     default:
       return "bg-gray-100 text-gray-800";
   }

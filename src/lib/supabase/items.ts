@@ -5,10 +5,10 @@ export interface ItemInput {
   item_name: string;
   item_category: string;
   item_sub_category: string;
-  location: string;
+  item_location: string;
   purchase_date?: string;
   status: string;
-  usageHistory: Array<{
+  usage_history: Array<{
     userId: string;
     userName: string;
     startDate: string;
@@ -21,21 +21,25 @@ export interface ItemInput {
 export interface Item
   extends Omit<
     ItemInput,
-    "item_name" | "itemCategory" | "itemSubCategory" | "location"
+    "item_name" | "itemCategory" | "itemSubCategory" | "itemLocation"
   > {
-  id: number;
+  item_id: number;
   item_name: string;
   item_category: string;
   item_sub_category: string;
-  location: string;
+  item_location: string;
   purchase_date: string;
   status: string;
   usage_history: Array<{
-    user_id: string;
-    user_name: string;
-    start_date: string;
-    end_date: string;
+    userId: string;
+    userName: string;
+    startDate: string;
+    endDate: string;
   }>;
+  createdAt: string;
+  lastUpdated: string;
+  createdBy: string;
+  lastUpdatedBy: string;
 }
 
 export const getItems = async (): Promise<Item[]> => {

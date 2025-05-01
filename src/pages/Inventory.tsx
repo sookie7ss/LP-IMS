@@ -4,7 +4,7 @@ import { PlusIcon, SearchIcon } from "lucide-react";
 import { InventoryTable } from "../components/inventory/InventoryTable";
 import { InventoryForm } from "../components/inventory/InventoryForm";
 import { getItems } from "../lib/supabase/items";
-import { Category, SubCategory } from "../interface/interfaceCategories";
+import { Category, Sub_Category } from "../interface/interfaceCategories";
 
 export const Inventory = () => {
   const [items, setItems] = useState<any[]>([]);
@@ -16,9 +16,9 @@ export const Inventory = () => {
       fetchItems();
     }, []);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<Sub_Category[]>([]);
   const [locations, setLocations] = useState<any[]>([]);
-  
+
   const fetchCategories = async () => {
     const { data, error } = await supabase.from("Category").select(`
       category_id,
@@ -204,7 +204,7 @@ export const Inventory = () => {
               items
             </p>
             <div className="mt-2">
-              {category.Sub_Category?.map((sub) => (
+              {subCategories.map((sub) => (
                 <span 
                   className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full mr-2 mb-2"
                   key={sub.sub_category_id}
@@ -229,6 +229,7 @@ export const Inventory = () => {
           onClose={() => {
             setShowForm(false);
             setEditingItemId(null);
+            setItems;
           }}
         />
       )}

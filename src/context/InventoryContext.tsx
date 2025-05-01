@@ -7,18 +7,17 @@ import React, {
 } from "react";
 import { InventoryItem } from "../types";
 import { useUser } from "./UserContext";
-import { Category, SubCategory } from "../interface/interfaceCategories";
+import { Category, Sub_Category } from "../interface/interfaceCategories";
 import { supabase } from "../lib/supabase/createclient";
 import { getItems } from "../lib/supabase/items";
 import { insertItem } from "../lib/supabase/items";
 import { OfficeLocation } from "../interface/interfaceLocation";
-import { format } from "path";
 import { getLocations } from "../lib/supabase/location";
 
 interface InventoryContextType {
   items: InventoryItem[];
   categories: Category[];
-  subCategories: SubCategory[];
+  subCategories: Sub_Category[];
   locations: OfficeLocation[];
 
   addItem: (
@@ -39,7 +38,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [items, setItems] = useState<InventoryItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
-  const [subCategories, setSubCategories] = useState<SubCategory[]>([]);
+  const [subCategories, setSubCategories] = useState<Sub_Category[]>([]);
   const [locations, setLocations] = useState<OfficeLocation[]>([]);
 
   const { currentUser } = useUser();
@@ -52,13 +51,15 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     try {
       // Convert the InventoryItem fields to ItemInput format
       const itemInputData = {
-        item_name: itemData.itemName,
-        item_category: itemData.itemCategory,
-        item_sub_category: itemData.itemSubCategory,
-        location: itemData.itemLocation,
+        item_name: itemData.item_name,
+        item_category: itemData.item_category,
+        item_sub_category: itemData.item_sub_category,
+        item_location: itemData.item_location,
         purchase_date: itemData.purchaseDate,
         status: itemData.status,
+        usage_history: [],
         createdAt: new Date().toISOString(),
+        last_updated: new Date().toISOString()
       };
 
       const result = await insertItem(itemInputData);
@@ -73,20 +74,12 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     }
   };
 
-  useEffect(() => {
-    const loadItems = async () => {
-      const items = await getItems(); // From items.ts
-      setItems(items || []);
-    };
-    loadItems();
-  }, []);
-
   const updateItem = (id: string, itemData: Partial<InventoryItem>) => {
     if (!currentUser) return;
     const numericId = Number(id);
     setItems((prev) =>
       prev.map((item) =>
-        item.id === numericId
+        item.item_id === numericId
           ? {
               ...item,
               ...itemData,
@@ -100,12 +93,12 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
 
   const deleteItem = (id: string) => {
     const numericId = Number(id);
-    setItems((prev) => prev.filter((item) => item.id !== numericId));
+    setItems((prev) => prev.filter((item) => item.item_id !== numericId));
   };
 
   const getItemById = (id: string) => {
     const numericId = Number(id);
-    return items.find((item) => item.id === numericId);
+    return items.find((item) => item.item_id === numericId);
   };
 
   const fetchCategories = async () => {
@@ -118,7 +111,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     } else if (data) {
       const formattedCategories = data.map((category) => ({
         category_id: category.category_id,
-        category_name: category.category_name,
+        category_name: category.category_name
       }));
       setCategories(formattedCategories); // Correctly format categories
     }
