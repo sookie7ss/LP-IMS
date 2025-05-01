@@ -21,10 +21,7 @@ interface InventoryContextType {
   locations: OfficeLocation[];
 
   addItem: (
-    item: Omit<
-      InventoryItem,
-      "id" | "createdAt" | "lastUpdated" | "createdBy" | "lastUpdatedBy"
-    >
+    item: Omit<InventoryItem, "id" | "createdAt" | "lastUpdated">
   ) => void;
   updateItem: (id: string, item: Partial<InventoryItem>) => void;
   deleteItem: (id: string) => void;
@@ -47,29 +44,32 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   const { currentUser } = useUser();
 
   const addItem = async (
-    itemData: Omit<
-      InventoryItem,
-      "id" | "createdAt" | "lastUpdated" | "createdBy" | "lastUpdatedBy"
-    >
+    itemData: Omit<InventoryItem, "id" | "createdAt" | "lastUpdated">
   ) => {
     if (!currentUser) return;
-  
-    const enrichedItem = {
-      ...itemData,
-      createdAt: new Date().toISOString(),
-      lastUpdated: new Date().toISOString(),
-      createdBy: currentUser.id,
-      lastUpdatedBy: currentUser.id,
-    };
 
-    const { data, error } = await insertItem(enrichedItem); // Supabase insert
-  if (error) {
-    console.error("Error adding item:", error);
-    return;
-  }
-  if (data) {
-    setItems((prev) => [...prev, ...data]); // Spread operator to add all items
-  }
+    try {
+      // Convert the InventoryItem fields to ItemInput format
+      const itemInputData = {
+        item_name: itemData.itemName,
+        item_category: itemData.itemCategory,
+        item_sub_category: itemData.itemSubCategory,
+        location: itemData.itemLocation,
+        purchase_date: itemData.purchaseDate,
+        status: itemData.status,
+        createdAt: new Date().toISOString(),
+      };
+
+      const result = await insertItem(itemInputData);
+
+      if (result) {
+        // Refresh items list after adding
+        const items = await getItems();
+        setItems(items || []);
+      }
+    } catch (error) {
+      console.error("Error in addItem:", error);
+    }
   };
 
   useEffect(() => {
@@ -119,7 +119,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
       setCategories(formattedCategories); // Correctly format categories
     }
   };
-  
+
   const fetchSubCategories = async (categoryId: number) => {
     const { data, error } = await supabase
       .from("Sub_Category")
@@ -135,7 +135,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
       `
       )
       .eq("category_id", categoryId);
-  
+
     if (error) {
       console.error("Error fetching subcategories:", error);
     } else if (data) {
@@ -149,13 +149,12 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
   };
 
   const fetchLocations = async () => {
-    const { data, error } = await supabase
-    .from("Locations")
-    .select(
+    const { data, error } = await supabase.from("Locations").select(
       `
       location_id,
       location_name
-      `); // From location.ts
+      `
+    ); // From location.ts
     if (error) {
       console.error("Error fetching locations:", error);
     } else if (data) {

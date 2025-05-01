@@ -68,7 +68,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
         itemName: formData.item_name,
         itemCategory: formData.item_category,
         itemSubCategory: formData.item_sub_category,
-        location: formData.item_location,
+        itemLocation: formData.item_location,
         purchaseDate: formData.purchaseDate,
         status: formData.status,
         usageHistory: [
@@ -78,14 +78,17 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
             startDate: new Date().toISOString(),
           },
         ],
+        createdBy: currentUser?.id || "unknown",
+        lastUpdatedBy: currentUser?.id || "unknown",
       };
 
+      console.log("Submitting data:", inventoryItemData);
       // Use the context's addItem function
       await addItem(inventoryItemData);
       onClose();
     } catch (err) {
       setError("Failed to add item. Please try again.");
-      console.error(err);
+      console.error("Form submission error:", err);
     } finally {
       setIsLoading(false);
     }
@@ -212,10 +215,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               >
                 <option value="">Select Location</option>
                 {locations.map((loc) => (
-                  <option
-                    key={loc.location_id}
-                    value={loc.location_name}
-                  >
+                  <option key={loc.location_id} value={loc.location_name}>
                     {loc.location_name}
                   </option>
                 ))}
