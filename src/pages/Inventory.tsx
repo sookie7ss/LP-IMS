@@ -205,7 +205,12 @@ export const Inventory = () => {
             </p>
             <div className="mt-2">
               {category.Sub_Category?.map((sub) => (
-                <span key={sub.sub_category_id}>{sub.sub_category_name}</span>
+                <span 
+                  className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded-full mr-2 mb-2"
+                  key={sub.sub_category_id}
+                >
+                  {sub.sub_category_name}
+                </span>
               ))}
             </div>
           </div>

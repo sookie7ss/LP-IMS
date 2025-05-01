@@ -8,14 +8,8 @@ import {
   ClockIcon,
   UserIcon,
 } from "lucide-react";
+import { UsageHistory } from "../lib/supabase/usagehistory";
 
-// Define types for clarity
-interface UsageHistory {
-  userId: string;
-  userName: string;
-  startDate: string;
-  endDate?: string;
-}
 
 export const Dashboard = () => {
   const { items } = useInventory();

@@ -68,7 +68,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
         itemName: formData.item_name,
         itemCategory: formData.item_category,
         itemSubCategory: formData.item_sub_category,
-        location: formData.item_location,
+        itemLocation: formData.item_location,
         purchaseDate: formData.purchaseDate,
         status: formData.status,
         usageHistory: [
@@ -212,10 +212,7 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               >
                 <option value="">Select Location</option>
                 {locations.map((loc) => (
-                  <option
-                    key={loc.location_id}
-                    value={loc.location_name}
-                  >
+                  <option key={loc.location_id} value={loc.location_name}>
                     {loc.location_name}
                   </option>
                 ))}
