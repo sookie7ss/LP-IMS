@@ -13,7 +13,7 @@ export const Designation = () => {
     item.itemCategory || item.item_category || "";
   const getItemSubCategory = (item: any) =>
     item.itemSubCategory || item.item_sub_category || "";
-  const getItemLocation = (item: any) => item.item_location || "";
+  const getItemLocation = (item: any) => item.item_location || item.itemLocation || "";
   const getItemStatus = (item: any) => item.status || "";
   const getItemUsageHistory = (item: any) => item.usage_history || [];
   const getItemLastUpdated = (item: any) =>
