@@ -79,12 +79,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           {
             userId: currentUser?.id || "unknown",
             userName: currentUser?.name || "Unknown User",
-            startDate: new Date().toDateString(),
-            endDate: new Date().toDateString()
+            startDate: new Date().toISOString(),
           },
         ],
-        createdAt: new Date().toDateString(),
-        lastUpdated: new Date().toDateString(),
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
         createdBy: currentUser?.id || "unknown",
         lastUpdatedBy: currentUser?.id || "unknown",
       };

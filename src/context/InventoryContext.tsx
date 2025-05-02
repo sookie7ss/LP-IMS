@@ -58,9 +58,9 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         item_location: itemData.item_location,
         purchase_date: itemData.purchaseDate,
         status: itemData.status,
-        usage_history: [itemData.usage_history.userId, itemData.usage_history.userName],
+        usage_history: itemData.usage_history,
         createdAt: new Date().toISOString(),
-        last_updated: new Date().toISOString()
+        last_updated: new Date().toISOString(),
       };
 
       const result = await insertItem(itemInputData);
@@ -112,7 +112,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     } else if (data) {
       const formattedCategories = data.map((category) => ({
         category_id: category.category_id,
-        category_name: category.category_name
+        category_name: category.category_name,
       }));
       setCategories(formattedCategories); // Correctly format categories
     }
