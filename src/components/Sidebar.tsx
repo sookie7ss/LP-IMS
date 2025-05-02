@@ -9,18 +9,18 @@ export const Sidebar = () => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const navItems = [
-    { path: '/Dashboard', icon: LayoutDashboardIcon, label: 'Dashboard ' },
-    { path: '/inventory', icon: PackageIcon, label: 'Inventory ' },
-    { path: '/designation', icon: MapPinIcon, label: 'Designation ' },
-    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'Purchase Details ' },
-    { path: '/usage-history', icon: HistoryIcon, label: 'Usage History ' },
+    { path: '/Dashboard', icon: LayoutDashboardIcon, label: 'Dashboard' },
+    { path: '/inventory', icon: PackageIcon, label: 'Inventory' },
+    { path: '/designation', icon: MapPinIcon, label: 'Designation' },
+    { path: '/purchase-details', icon: ShoppingCartIcon, label: 'Purchase Details' },
+    { path: '/usage-history', icon: HistoryIcon, label: 'Usage History' },
     { path: '/user-management', icon: UsersIcon, label: 'User Management' }
   ];
 
   return (
     <aside
   className={`bg-black/80 border-r border-gray-200 transition-all duration-300 shadow-lg ${
-    isExpanded ? 'w-64' : 'w-20'
+    isExpanded ? 'w-64' : 'w-25'
   }`}
   onMouseEnter={() => setIsExpanded(true)}
   onMouseLeave={() => setIsExpanded(false)}
@@ -67,7 +67,7 @@ export const Sidebar = () => {
               className="text-md"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 0.5 }}
             >
               {label}
             </motion.span>
