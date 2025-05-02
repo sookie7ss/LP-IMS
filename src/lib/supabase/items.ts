@@ -7,7 +7,11 @@ export interface ItemInput {
   item_sub_category: string;
   item_location: string;
   purchase_date?: string;
+  item_supplier?: string;
+  item_cost?: number;
   status: string;
+  item_remarks?: string;
+
   usage_history: Array<{
     userId: string;
     userName: string;
@@ -15,6 +19,9 @@ export interface ItemInput {
     endDate?: string;
   }>;
   createdAt?: string;
+  lastUpdated?: string;
+  createdBy?: string;
+  lastUpdatedBy?: string;
 }
 
 // Define the full item with the ID
@@ -29,13 +36,18 @@ export interface Item
   item_sub_category: string;
   item_location: string;
   purchase_date: string;
+  item_supplier: string;
+  item_cost: number;
   status: string;
+  item_remarks: string;
+
   usage_history: Array<{
     userId: string;
     userName: string;
     startDate: string;
     endDate: string;
   }>;
+  
   createdAt: string;
   lastUpdated: string;
   createdBy: string;

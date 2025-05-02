@@ -30,10 +30,10 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     item_sub_category: "",
     item_location: "",
     purchaseDate: "",
-    supplier: "",
-    cost: "",
+    item_supplier: "",
+    item_cost: 0,
     status: "Active - Currently Used",
-    remarks: "",
+    item_remarks: "",
   });
 
   useEffect(() => {
@@ -46,10 +46,10 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           item_sub_category: item.item_sub_category,
           item_location: item.item_location,
           purchaseDate: item.purchaseDate || "",
-          supplier: "", // These fields don't exist in InventoryItem
-          cost: "", // Adjust as needed
+          item_supplier: item.item_supplier,
+          item_cost: item.item_cost,
           status: item.status,
-          remarks: "", // Adjust as needed
+          item_remarks: item.item_remarks,
         });
         setSelectedCategory(item.item_category);
       }
@@ -70,7 +70,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
         item_sub_category: formData.item_sub_category,
         item_location: formData.item_location,
         purchaseDate: formData.purchaseDate,
+        item_supplier: formData.item_supplier,
+        item_cost: formData.item_cost,
         status: formData.status,
+        item_remarks: formData.item_remarks,
+
         usage_history: [
           {
             userId: currentUser?.id || "unknown",
@@ -250,11 +254,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               <input
                 type="text"
                 required
-                value={formData.supplier}
+                value={formData.item_supplier}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    supplier: e.target.value,
+                    item_supplier: e.target.value,
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -270,11 +274,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
                 required
                 min="0"
                 step="0.01"
-                value={formData.cost}
+                value={formData.item_cost}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    cost: e.target.value,
+                    item_cost: parseFloat(e.target.value),
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -315,11 +319,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               Remarks
             </label>
             <textarea
-              value={formData.remarks}
+              value={formData.item_remarks}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  remarks: e.target.value,
+                  item_remarks: e.target.value,
                 })
               }
               rows={3}

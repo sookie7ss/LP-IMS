@@ -13,7 +13,10 @@ export interface InventoryItem {
   item_sub_category: string;
   item_location: string;
   purchaseDate?: string;
+  item_supplier: string;
+  item_cost: number;
   status: string;
+  item_remarks: string;
   usage_history: Array<{ userId: string; userName: string; startDate: string; endDate?: string }>;
   createdAt: string;
   lastUpdated: string;
