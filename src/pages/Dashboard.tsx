@@ -8,7 +8,7 @@ import {
   ClockIcon,
   UserIcon,
 } from "lucide-react";
-import { UsageHistory } from "../lib/supabase/usagehistory";
+import { UsageHistory } from "../interface/interfaceUsageHistory";
 
 
 export const Dashboard = () => {
@@ -18,7 +18,7 @@ export const Dashboard = () => {
   const getItemName = (item: any) => item.itemName || item.item_name || "";
   const getItemStatus = (item: any) => item.status || "";
   const getUsageHistory = (item: any): UsageHistory[] =>
-    item.usageHistory || [];
+    item.usage_history || [];
   const getLastUpdated = (item: any) =>
     item.lastUpdated || item.last_update || new Date().toISOString();
 

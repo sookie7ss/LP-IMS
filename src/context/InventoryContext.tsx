@@ -13,6 +13,7 @@ import { getItems } from "../lib/supabase/items";
 import { insertItem } from "../lib/supabase/items";
 import { OfficeLocation } from "../interface/interfaceLocation";
 import { getLocations } from "../lib/supabase/location";
+import { getUsageHistory } from "../lib/supabase/usagehistory";
 
 interface InventoryContextType {
   items: InventoryItem[];
@@ -57,7 +58,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         item_location: itemData.item_location,
         purchase_date: itemData.purchaseDate,
         status: itemData.status,
-        usage_history: [],
+        usage_history: [itemData.usage_history.userId, itemData.usage_history.userName],
         createdAt: new Date().toISOString(),
         last_updated: new Date().toISOString()
       };
@@ -151,9 +152,15 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     console.log("Loaded locations into context:", locs);
   };
 
+  const fetchUsageHistory = async () => {
+    const usageHistory = await getUsageHistory();
+    console.log("Fetched usage history:", usageHistory);
+  };
+
   useEffect(() => {
     fetchCategories();
     fetchLocations();
+    fetchUsageHistory();
   }, []);
 
   return (

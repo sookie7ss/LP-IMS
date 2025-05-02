@@ -14,7 +14,7 @@ export const getLocations = async (): Promise<OfficeLocation[]> => {
       .order('location_id', { ascending: true });
   
     if (error) {
-      console.error("Supabase error fetching locations:", error);
+      console.error("Error fetching locations:", error);
       return [];
     }
   
