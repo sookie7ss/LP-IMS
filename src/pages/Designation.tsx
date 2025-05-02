@@ -13,9 +13,9 @@ export const Designation = () => {
     item.itemCategory || item.item_category || "";
   const getItemSubCategory = (item: any) =>
     item.itemSubCategory || item.item_sub_category || "";
-  const getItemLocation = (item: any) => item.location || "";
+  const getItemLocation = (item: any) => item.item_location || "";
   const getItemStatus = (item: any) => item.status || "";
-  const getItemUsageHistory = (item: any) => item.usageHistory || [];
+  const getItemUsageHistory = (item: any) => item.usage_history || [];
   const getItemLastUpdated = (item: any) =>
     item.lastUpdated || item.last_update || new Date().toISOString();
 
@@ -32,7 +32,7 @@ export const Designation = () => {
 
   const locationStats = locations.map((location) => {
     const locationItems = items.filter(
-      (item) => getItemLocation(item) === location.name
+      (item) => getItemLocation(item) === location.location_name
     );
     return {
       ...location,
@@ -73,18 +73,18 @@ export const Designation = () => {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
         {locationStats.map((location) => (
           <div
-            key={location.id}
-            onClick={() => setSelectedLocation(location.name)}
+            key={location.location_id}
+            onClick={() => setSelectedLocation(location.location_name)}
             className={`bg-white rounded-lg shadow-sm p-4 cursor-pointer transition-all
               ${
-                selectedLocation === location.name
+                selectedLocation === location.location_name
                   ? "ring-2 ring-blue-500"
                   : "hover:bg-gray-50"
               }`}
           >
             <div className="flex justify-between items-start">
               <div>
-                <h3 className="font-medium text-gray-900">{location.name}</h3>
+                <h3 className="font-medium text-gray-900">{location.location_name}</h3>
                 <p className="mt-1 text-sm text-gray-500">
                   {location.totalItems} items
                 </p>
@@ -115,7 +115,7 @@ export const Designation = () => {
         <div className="p-4">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredItems.map((item) => (
-              <div key={item.id} className="p-4 bg-gray-50 rounded-lg">
+              <div key={item.item_id} className="p-4 bg-gray-50 rounded-lg">
                 <div className="flex justify-between items-start">
                   <div>
                     <h4 className="font-medium text-gray-900">

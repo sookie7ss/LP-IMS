@@ -46,10 +46,10 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           item_sub_category: item.item_sub_category,
           item_location: item.item_location,
           purchaseDate: item.purchaseDate || "",
-          item_supplier: item.item_supplier,
-          item_cost: item.item_cost,
+          item_supplier: item.item_supplier || "",
+          item_cost: item.item_cost || 0,
           status: item.status,
-          item_remarks: item.item_remarks,
+          item_remarks: item.item_remarks || "",
         });
         setSelectedCategory(item.item_category);
       }
@@ -79,12 +79,12 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           {
             userId: currentUser?.id || "unknown",
             userName: currentUser?.name || "Unknown User",
-            startDate: new Date().toISOString(),
-            endDate: new Date().toISOString()
+            startDate: new Date().toDateString(),
+            endDate: new Date().toDateString()
           },
         ],
-        createdAt: new Date().toISOString(),
-        lastUpdated: new Date().toISOString(),
+        createdAt: new Date().toDateString(),
+        lastUpdated: new Date().toDateString(),
         createdBy: currentUser?.id || "unknown",
         lastUpdatedBy: currentUser?.id || "unknown",
       };

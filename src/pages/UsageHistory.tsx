@@ -36,7 +36,7 @@ export const UsageHistory = () => {
   const usageEntries = items
     .flatMap((item) =>
       getItemUsageHistory(item).map((history) => ({
-        itemId: item.id,
+        itemId: item.item_id,
         itemName: getItemName(item),
         category: getItemCategory(item),
         location: getItemLocation(item),
