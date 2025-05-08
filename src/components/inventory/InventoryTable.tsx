@@ -18,7 +18,7 @@ export const InventoryTable: React.FC<InventoryTableProps> = ({
   const getItemSubCategory = (item: any) =>
     item.itemSubCategory || item.item_sub_category || "";
   const getItemLocation = (item: any) =>
-    item.itemLocation || item.location || "";
+    item.itemLocation || item.item_location || "";
   const getItemId = (item: any): string => (item.id || "").toString();
   const getLastUpdated = (item: any) =>
     item.lastUpdated || item.last_update || new Date().toISOString();

@@ -50,8 +50,8 @@ export const Dashboard = () => {
         action: "updated",
       },
     ])
-    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    .slice(0, 5);
+    .sort((a, b) => b.date - a.date)
+    .slice(-5, -1);
 
   return (
     <div className="space-y-6">

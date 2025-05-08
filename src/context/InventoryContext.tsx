@@ -50,7 +50,6 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
     if (!currentUser) return;
 
     try {
-      // Convert the InventoryItem fields to ItemInput format
       const itemInputData = {
         item_name: itemData.item_name,
         item_category: itemData.item_category,
@@ -114,7 +113,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         category_id: category.category_id,
         category_name: category.category_name,
       }));
-      setCategories(formattedCategories); // Correctly format categories
+      setCategories(formattedCategories);
     }
   };
 
@@ -142,7 +141,7 @@ export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
         sub_category_name: subCategory.sub_category_name,
         category_id: subCategory.category_id,
       }));
-      setSubCategories(formattedSubCategories); // Correctly format subcategories
+      setSubCategories(formattedSubCategories);
     }
   };
 
