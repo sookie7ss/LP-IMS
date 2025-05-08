@@ -5,107 +5,81 @@ import React, {
   ReactNode,
   useEffect,
 } from "react";
-import { InventoryItem, Location } from "../types";
+import { InventoryItem } from "../types";
 import { useUser } from "./UserContext";
 import { Category, Sub_Category } from "../interface/interfaceCategories";
 import { supabase } from "../lib/supabase/createclient";
+import { getItems } from "../lib/supabase/items";
+import { insertItem } from "../lib/supabase/items";
+import { OfficeLocation } from "../interface/interfaceLocation";
+import { getLocations } from "../lib/supabase/location";
+import { getUsageHistory } from "../lib/supabase/usagehistory";
 
 interface InventoryContextType {
   items: InventoryItem[];
   categories: Category[];
   subCategories: Sub_Category[];
-  locations: Location[];
+  locations: OfficeLocation[];
 
   addItem: (
-    item: Omit<
-      InventoryItem,
-      "id" | "createdAt" | "lastUpdated" | "createdBy" | "lastUpdatedBy"
-    >
+    item: Omit<InventoryItem, "id" | "createdAt" | "lastUpdated">
   ) => void;
   updateItem: (id: string, item: Partial<InventoryItem>) => void;
   deleteItem: (id: string) => void;
   getItemById: (id: string) => InventoryItem | undefined;
   fetchSubCategories: (categoryId: number) => void;
 }
+
 const InventoryContext = createContext<InventoryContextType | undefined>(
   undefined
 );
-// Mock categories
-// Mock locations
-const mockLocations: Location[] = [
-  {
-    id: "loc-1",
-    name: "LP1 Coworking",
-  },
-  {
-    id: "loc-2",
-    name: "LP2 Plus",
-  },
-  {
-    id: "loc-3",
-    name: "LP3 Suite",
-  },
-  {
-    id: "loc-4",
-    name: "LP4 Griffinstone",
-  },
-];
-// Mock inventory items
-const mockItems: InventoryItem[] = [
-  {
-    id: "item-1",
-    item_name: 'Dell Monitor 24"',
-    item_category: "IT Devices",
-    item_sub_category: "Monitors",
-    location: "LP1 Coworking",
-    purchaseDate: "2023-01-15",
-    supplier: "Dell Inc.",
-    cost: 299.99,
-    status: "Active - Currently Used",
-    createdAt: "2023-01-16T10:00:00Z",
-    last_update: "2023-01-16T10:00:00Z",
-    createdBy: "user-1",
-    lastUpdatedBy: "user-1",
-    usageHistory: [
-      {
-        userId: "user-1",
-        userName: "Admin User",
-        startDate: "2023-01-16T10:00:00Z",
-      },
-    ],
-  },
-  // Add more mock items as needed
-];
-export const InventoryProvider: React.FC<{
-  children: ReactNode;
-}> = ({ children }) => {
-  const [items, setItems] = useState<InventoryItem[]>(mockItems);
+
+export const InventoryProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [items, setItems] = useState<InventoryItem[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [subCategories, setSubCategories] = useState<Sub_Category[]>([]);
+  const [locations, setLocations] = useState<OfficeLocation[]>([]);
 
   const { currentUser } = useUser();
-  const addItem = (
-    itemData: Omit<
-      InventoryItem,
-      "id" | "createdAt" | "lastUpdated" | "createdBy" | "lastUpdatedBy"
-    >
+
+  const addItem = async (
+    itemData: Omit<InventoryItem, "id" | "createdAt" | "lastUpdated">
   ) => {
     if (!currentUser) return;
-    const newItem: InventoryItem = {
-      ...itemData,
-      id: `item-${Date.now()}`,
-      createdAt: new Date().toISOString(),
-      last_update: new Date().toISOString(),
-      createdBy: currentUser.id,
-      lastUpdatedBy: currentUser.id,
-    };
-    setItems((prev) => [...prev, newItem]);
+
+    try {
+      const itemInputData = {
+        item_name: itemData.item_name,
+        item_category: itemData.item_category,
+        item_sub_category: itemData.item_sub_category,
+        item_location: itemData.item_location,
+        purchase_date: itemData.purchaseDate,
+        status: itemData.status,
+        usage_history: itemData.usage_history,
+        createdAt: new Date().toISOString(),
+        last_updated: new Date().toISOString(),
+      };
+
+      const result = await insertItem(itemInputData);
+
+      if (result) {
+        // Refresh items list after adding
+        const items = await getItems();
+        setItems(items || []);
+      }
+    } catch (error) {
+      console.error("Error in addItem:", error);
+    }
   };
+
   const updateItem = (id: string, itemData: Partial<InventoryItem>) => {
     if (!currentUser) return;
+    const numericId = Number(id);
     setItems((prev) =>
       prev.map((item) =>
-        item.id === id
+        item.item_id === numericId
           ? {
               ...item,
               ...itemData,
@@ -116,11 +90,15 @@ export const InventoryProvider: React.FC<{
       )
     );
   };
+
   const deleteItem = (id: string) => {
-    setItems((prev) => prev.filter((item) => item.id !== id));
+    const numericId = Number(id);
+    setItems((prev) => prev.filter((item) => item.item_id !== numericId));
   };
+
   const getItemById = (id: string) => {
-    return items.find((item) => item.id === id);
+    const numericId = Number(id);
+    return items.find((item) => item.item_id === numericId);
   };
 
   const fetchCategories = async () => {
@@ -131,7 +109,11 @@ export const InventoryProvider: React.FC<{
     if (error) {
       console.error("Error fetching categories:", error);
     } else if (data) {
-      setCategories(data);
+      const formattedCategories = data.map((category) => ({
+        category_id: category.category_id,
+        category_name: category.category_name,
+      }));
+      setCategories(formattedCategories);
     }
   };
 
@@ -140,26 +122,44 @@ export const InventoryProvider: React.FC<{
       .from("Sub_Category")
       .select(
         `
-      sub_category_id,
-      sub_category_name,
-      category_id,
-      Category (
+        sub_category_id,
+        sub_category_name,
         category_id,
-        category_name
-      )
-    `
+        Category (
+          category_id,
+          category_name
+        )
+      `
       )
       .eq("category_id", categoryId);
 
     if (error) {
       console.error("Error fetching subcategories:", error);
     } else if (data) {
-      setSubCategories(data);
+      const formattedSubCategories = data.map((subCategory) => ({
+        sub_category_id: subCategory.sub_category_id,
+        sub_category_name: subCategory.sub_category_name,
+        category_id: subCategory.category_id,
+      }));
+      setSubCategories(formattedSubCategories);
     }
+  };
+
+  const fetchLocations = async () => {
+    const locs = await getLocations();
+    setLocations(locs);
+    console.log("Loaded locations into context:", locs);
+  };
+
+  const fetchUsageHistory = async () => {
+    const usageHistory = await getUsageHistory();
+    console.log("Fetched usage history:", usageHistory);
   };
 
   useEffect(() => {
     fetchCategories();
+    fetchLocations();
+    fetchUsageHistory();
   }, []);
 
   return (
@@ -168,7 +168,7 @@ export const InventoryProvider: React.FC<{
         items,
         categories,
         subCategories,
-        locations: mockLocations,
+        locations,
         addItem,
         updateItem,
         deleteItem,
@@ -180,6 +180,7 @@ export const InventoryProvider: React.FC<{
     </InventoryContext.Provider>
   );
 };
+
 export const useInventory = () => {
   const context = useContext(InventoryContext);
   if (!context) {

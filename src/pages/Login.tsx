@@ -2,24 +2,29 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import backgroundImage from '../assets/Background.jpg';
 import logo from '../assets/head.png';
+import { InventoryForm } from '../components/inventory/InventoryForm';
+import { EyeIcon, EyeOffIcon } from 'lucide-react';
+
 
 export const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate(); // React Router hook
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // Fake authentication logic (replace with real API call)
+  
     if (username === "admin" && password === "password") {
-      localStorage.setItem("user", JSON.stringify({ username })); // Store user session
-      navigate("/dashboard"); // Redirect to dashboard
+      localStorage.setItem("user", JSON.stringify({ username }));
+      navigate("/dashboard");
     } else {
-      alert("Invalid credentials");
+      setError("Incorrect Username or Password");
     }
   };
+  
 
 
   return (
@@ -46,34 +51,47 @@ export const Login = () => {
                 Username
               </label>
               <div className="mt-1">
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-C focus:border-[#adeb36] focus:z-10 sm:text-sm"
-                />
+              <input
+              id="username"
+              name="username"
+              type="text"
+              required
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              className={`appearance-none block w-full px-3 py-2 border ${
+              error ? "border-red-500" : "border-gray-300"
+              } placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-[#adeb36] focus:border-[#adeb36] sm:text-sm`}
+              />
+
               </div>
             </div>
   
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#adeb36] focus:border-[#adeb36] focus:z-10 sm:text-sm"
-                />
-              </div>
-            </div>
+            <div className="mt-1 relative">
+            <input
+              id="password"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={`appearance-none block w-full px-3 py-2 border ${
+                error ? "border-red-500" : "border-gray-300"
+              } placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-[#adeb36] focus:border-[#adeb36] sm:text-sm pr-10`}
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
+              tabIndex={-1}
+            >
+              {showPassword ? <EyeOffIcon size={18} /> : <EyeIcon size={18} />}
+            </button>
+          </div>
+          <div>
+          {error && (
+              <p className="text-sm text-red-500 mt-2 text-center">{error}</p>
+            )}
+          </div>
   
             <div className="flex items-center justify-between">
               <div className="flex items-center">

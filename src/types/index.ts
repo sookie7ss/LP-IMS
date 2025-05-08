@@ -5,34 +5,21 @@ export interface User {
   role: "admin" | "manager" | "staff";
   active: boolean;
 }
+
 export interface InventoryItem {
-  id: string;
+  item_id?: number;
   item_name: string;
   item_category: string;
   item_sub_category: string;
-  location: string;
-  purchaseDate: string;
-  supplier: string;
-  cost: number;
-  status:
-    | "Active - Currently Used"
-    | "Active - Not Currently Used"
-    | "Inactive - Defective"
-    | "Disposed";
-  remarks?: string;
-  last_update: string;
-  lastUpdatedBy: string;
-  createdBy: string;
+  item_location: string;
+  purchaseDate?: string;
+  item_supplier?: string;
+  item_cost?: number;
+  status: string;
+  item_remarks?: string;
+  usage_history: Array<{ userId: string; userName: string; startDate: string; endDate?: string }>;
   createdAt: string;
-  usageHistory: {
-    userId: string;
-    userName: string;
-    startDate: string;
-    endDate?: string;
-  }[];
-}
-
-export interface Location {
-  id: string;
-  name: string;
+  lastUpdated: string;
+  createdBy: string;
+  lastUpdatedBy: string;
 }

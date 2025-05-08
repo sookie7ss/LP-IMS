@@ -2,7 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useInventory } from "../../context/InventoryContext";
 import { XIcon } from "lucide-react";
 import { InventoryItem } from "../../types";
-import { addItem } from "../../lib/supabase/items";
+import { ItemInput } from "../../lib/supabase/items";
+import { useUser } from "../../context/UserContext";
+
 interface InventoryFormProps {
   itemId: string | null;
   onClose: () => void;
@@ -18,19 +20,22 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
     locations,
     getItemById,
     fetchSubCategories,
+    addItem,
   } = useInventory();
+  const { currentUser } = useUser();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [formData, setFormData] = useState({
     item_name: "",
     item_category: "",
     item_sub_category: "",
-    location: "",
+    item_location: "",
     purchaseDate: "",
-    supplier: "",
-    cost: "",
+    item_supplier: "",
+    item_cost: 0,
     status: "Active - Currently Used",
-    remarks: "",
+    item_remarks: "",
   });
+
   useEffect(() => {
     if (itemId) {
       const item = getItemById(itemId);
@@ -39,30 +44,60 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
           item_name: item.item_name,
           item_category: item.item_category,
           item_sub_category: item.item_sub_category,
-          location: item.location,
-          purchaseDate: item.purchaseDate,
-          supplier: item.supplier,
-          cost: item.cost.toString(),
+          item_location: item.item_location,
+          purchaseDate: item.purchaseDate || "",
+          item_supplier: item.item_supplier || "",
+          item_cost: item.item_cost || 0,
           status: item.status,
-          remarks: item.remarks || "",
+          item_remarks: item.item_remarks || "",
         });
         setSelectedCategory(item.item_category);
       }
     }
   }, [itemId, getItemById]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
     try {
-      const result = await addItem(formData);
-      if (!result) {
-        console.error("Error adding item: Response is null");
-        return;
-      }
-      console.log("Item added successfully:", result);
-    } catch (error) {
-      console.error("Error adding item:", error);
+      // Create an inventory item with the correct property names
+      const inventoryItemData = {
+        item_name: formData.item_name,
+        item_category: formData.item_category,
+        item_sub_category: formData.item_sub_category,
+        item_location: formData.item_location,
+        purchaseDate: formData.purchaseDate,
+        item_supplier: formData.item_supplier,
+        item_cost: formData.item_cost,
+        status: formData.status,
+        item_remarks: formData.item_remarks,
+
+        usage_history: [
+          {
+            userId: currentUser?.id || "unknown",
+            userName: currentUser?.name || "Unknown User",
+            startDate: new Date().toISOString(),
+          },
+        ],
+        createdAt: new Date().toISOString(),
+        lastUpdated: new Date().toISOString(),
+        createdBy: currentUser?.id || "unknown",
+        lastUpdatedBy: currentUser?.id || "unknown",
+      };
+
+      console.log("Submitting data:", inventoryItemData);
+      // Use the context's addItem function
+      await addItem(inventoryItemData);
+      onClose();
+    } catch (err) {
+      setError("Failed to add item. Please try again.");
+      console.error("Form submission error:", err);
+    } finally {
+      setIsLoading(false);
     }
-    onClose();
   };
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -175,19 +210,19 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               </label>
               <select
                 required
-                value={formData.location}
+                value={formData.item_location}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    location: e.target.value,
+                    item_location: e.target.value,
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
               >
                 <option value="">Select Location</option>
-                {locations.map((location) => (
-                  <option key={location.id} value={location.name}>
-                    {location.name}
+                {locations.map((loc) => (
+                  <option key={loc.location_id} value={loc.location_name}>
+                    {loc.location_name}
                   </option>
                 ))}
               </select>
@@ -218,11 +253,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               <input
                 type="text"
                 required
-                value={formData.supplier}
+                value={formData.item_supplier}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    supplier: e.target.value,
+                    item_supplier: e.target.value,
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -238,11 +273,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
                 required
                 min="0"
                 step="0.01"
-                value={formData.cost}
+                value={formData.item_cost}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
-                    cost: e.target.value,
+                    item_cost: parseFloat(e.target.value),
                   })
                 }
                 className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
@@ -283,11 +318,11 @@ export const InventoryForm: React.FC<InventoryFormProps> = ({
               Remarks
             </label>
             <textarea
-              value={formData.remarks}
+              value={formData.item_remarks}
               onChange={(e) =>
                 setFormData({
                   ...formData,
-                  remarks: e.target.value,
+                  item_remarks: e.target.value,
                 })
               }
               rows={3}
